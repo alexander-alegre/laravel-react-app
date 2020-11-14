@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { useCookies } from 'react-cookie';
 import Loading from './Loading';
 import axios from 'axios';
+import UpdateNameExample from './UpdateNameExample';
 
 function Example() {
     const [loading, setLoading] = useState(true);
@@ -48,7 +49,7 @@ function Example() {
     }, []);
 
     return loading ? (<Loading />) : (
-        <div className="container ease-in">
+        <div className="container">
             <div className="row justify-content-center">
                 <div className="col-md-8">
                     <div className="card">
@@ -60,6 +61,7 @@ function Example() {
                     </div>
                 </div>
             </div>
+            <UpdateNameExample token={token} name={user.name} setUser={setUser} />
         </div>
     );
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,23 @@ Route::middleware('auth:sanctum')->post('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->post('/init', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->post('/updateName', function (Request $request) {
+    // validate
+    $validator = Validator::make($request->all(), [
+        'name' => ['required', 'string', 'min:2', 'max:255'],
+    ]);
+
+    // return errors if any
+    if ($validator->errors()->isNotEmpty()) {
+        return response()->json([
+            'errors' => $validator->errors(),
+        ]);
+    }
+    $name = $validator->validated()['name'];
+    $user = $request->user();
+    $user->name = ucwords(strtolower($name));
+    $user->save();
+    return response()->json([
+        'user' => $user,
+    ]);
 });
