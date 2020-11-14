@@ -24,11 +24,17 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->hasCookie('auth')) {
+        // 1440 seconds in a day
+        $days = 1440 * 5;
+
+        if (!$request->user()->currentAccessToken()) {
             $token = $request->user()->createToken('auth');
-            $minutes = 60;
-            return Response::view('home')->withCookie(cookie('auth', $token->plainTextToken, $minutes)->withHttpOnly(false));
+            return Response::view('home')
+                ->withCookie(cookie('auth', $token->plainTextToken, $days)->withHttpOnly(false));
         }
-        return Response::view('home');
+
+        $token = $request->user()->currentAccessToken();
+        return Response::view('home')
+            ->withCookie(cookie('auth', $token->plainTextToken, $days)->withHttpOnly(false));
     }
 }
